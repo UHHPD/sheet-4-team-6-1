@@ -89,6 +89,7 @@ int checkCompatibility(Data in, Data in2, int n) {
 }
 */
 
+/*
 double average(Data in1, Data in2){
     using namespace std;
     if (in1.checkCompatibility(in2, 2) > 0){
@@ -107,6 +108,52 @@ double average(Data in1, Data in2){
         cout << "Average: " << avSum/in1.size() << endl;
         return avSum/in1.size();
     }
+}
+*/
+
+Data average(Data in1, Data in2 ){
+  using namespace std;
+  if (in1.checkCompatibility(in2, 2) > 0){
+      cout << "Datsasets are not compatible! Average is not calculated" << endl;
+      return in1;
+  }
+  else{
+    int out_size = in1.size();
+    vector<double> out_data;
+    vector<double> out_bins;
+    vector<double> out_errors;
+    for (int i=0;i<out_size;i++){
+      double w1= 1/(in1.error(i)*in1.error(i));
+      double w2= 1/(in2.error(i)*in2.error(i));
+      double dataout= (w1*in1.measurement(i)+w2*in2.measurement(i))/(w1+w2);
+      double errorout= sqrt(1/(w1+w2));
+      out_data.push_back(dataout);
+      out_bins.push_back(in1.binLow(i));
+      out_errors.push_back(errorout);
+    }
+    out_bins.push_back(in1.binLow(out_size+1));
+  
+    ofstream fout("average");
+  
+    fout << out_size << endl;
+  
+    for (int i=0;i < out_size + 1; i++){
+      fout << out_bins[i] << endl;
+    }
+  
+    for (int i=0;i < out_size ; i++){
+      fout << out_data[i] << endl;
+    }
+  
+    for (int i=0;i < out_size ; i++){
+      fout << out_errors[i] << endl;
+    }
+  
+    fout.close();
+  
+    Data outputdata("average");
+    return outputdata; 
+  } 
 }
 
 double equation(double x) {
@@ -218,9 +265,13 @@ int main() {
 
     cout << "******************************************************" << endl;
     cout << "Aufgabe 1e)" << endl;
-    cout << "DatA/DatD" << endl;
+    //cout << "DatA/DatD" << endl;
 
-    average(datA, datD);
+    Data datav = average(datA,datB);
+    cout << "measurement of average of a and b in bin 27: " << datav.measurement(27)
+       << endl;
+
+    //average(datA, datD);
 
     cout << "******************************************************" << endl;
     cout << "Aufgabe 2b)" << endl;
