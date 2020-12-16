@@ -3,6 +3,7 @@
 #include <functional>
 #include <string>
 #include <cmath>
+#include <fstream>
 
 #include "Data.hh"
 
